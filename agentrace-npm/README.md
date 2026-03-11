@@ -4,7 +4,7 @@ Visual debugger for AI agent loops. Step-by-step. Locally. Zero config.
 
 ## Quick Start
 ```bash
-npx agentrace
+npx @ravaniroshan/agentrace
 ```
 
 Opens the trace viewer at http://localhost:7823
@@ -35,22 +35,22 @@ def web_search(query: str) -> str:
 
 View traces from any terminal:
 ```bash
-npx agentrace
+npx @ravaniroshan/agentrace
 ```
 
 ## Commands
 ```bash
-npx agentrace              # start UI viewer (default)
-npx agentrace ui           # start UI viewer
-npx agentrace traces       # list all traces in terminal
-npx agentrace clear        # delete all traces
-npx agentrace --version    # show version
-npx agentrace --help       # show help
+npx @ravaniroshan/agentrace              # start UI viewer (default)
+npx @ravaniroshan/agentrace ui           # start UI viewer
+npx @ravaniroshan/agentrace traces       # list all traces in terminal
+npx @ravaniroshan/agentrace clear        # delete all traces
+npx @ravaniroshan/agentrace --version    # show version
+npx @ravaniroshan/agentrace --help       # show help
 ```
 
 ## Global Install
 ```bash
-npm install -g agentrace
+npm install -g @ravaniroshan/agentrace
 agentrace ui
 ```
 

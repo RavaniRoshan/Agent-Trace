@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const VERSION = "0.1.0";
+const VERSION = "0.1.3";
 
 const HELP_TEXT = `
-  AgentTrace — Visual debugger for AI agent loops
+  AgentTrace â€” Visual debugger for AI agent loops
 
   Usage:
     npx agentrace              Start the UI viewer

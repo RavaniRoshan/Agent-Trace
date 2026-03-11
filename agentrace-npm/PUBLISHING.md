@@ -43,23 +43,23 @@ This triggers the publish.yml GitHub Action automatically.
 The package is live on npm within 2-3 minutes.
 
 ### Step 4: Verify it published
-npm info agentrace
-npx agentrace --version
+npm info @ravaniroshan/agentrace
+npx @ravaniroshan/agentrace --version
 
 ## Manual Publish (if GitHub Actions is not set up yet)
 npm login
 npm publish --access public
 
 ## Verify After Publishing
-npm info agentrace version          ? shows current published version
-npm info agentrace dist-tags        ? shows latest tag
-npx agentrace --version             ? tests the published package end-to-end
+npm info @ravaniroshan/agentrace version          ? shows current published version
+npm info @ravaniroshan/agentrace dist-tags        ? shows latest tag
+npx @ravaniroshan/agentrace --version             ? tests the published package end-to-end
 
 ---
 
 ## Version History
 v0.1.0 - Initial release
-         - npx agentrace (UI viewer)
-         - npx agentrace traces (terminal list)
-         - npx agentrace clear (delete traces)
+         - npx @ravaniroshan/agentrace (UI viewer)
+         - npx @ravaniroshan/agentrace traces (terminal list)
+         - npx @ravaniroshan/agentrace clear (delete traces)
          - Reads ~/.agentrace/traces/ written by pip install agentrace

@@ -143,7 +143,7 @@ export function createApp() {
   });
 
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", version: "0.1.0", runtime: "node" });
+    res.json({ status: "ok", version: "0.1.3", runtime: "node" });
   });
 
   app.get("/api/traces", (req, res) => {
