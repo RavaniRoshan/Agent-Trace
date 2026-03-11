@@ -191,6 +191,25 @@
 
   .refresh-btn:hover { color: var(--text); border-color: var(--accent); }
 
+  .shortcuts-hint-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+
+  .shortcuts-hint-btn:hover {
+    color: var(--text);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(124,106,247,0.18);
+  }
+
   .trace-list {
     flex: 1;
     overflow-y: auto;
@@ -817,6 +836,69 @@
     background: var(--bg1);
   }
 
+  .shortcuts-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.68);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  .shortcuts-modal-overlay.open {
+    display: flex;
+  }
+
+  .shortcuts-modal {
+    width: min(520px, 92vw);
+    background: var(--bg1);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    padding: 18px;
+  }
+
+  .shortcuts-title {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .shortcuts-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .shortcuts-table th,
+  .shortcuts-table td {
+    border-bottom: 1px solid var(--border);
+    padding: 8px 6px;
+    text-align: left;
+  }
+
+  .shortcuts-table th {
+    color: var(--text3);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .shortcuts-table td:first-child {
+    width: 120px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .shortcuts-modal-footnote {
+    margin-top: 10px;
+    color: var(--text3);
+    font-size: 11px;
+  }
+
 </style>
 </head>
 <body>
@@ -829,6 +911,7 @@
   <span class="badge badge-version">v0.1.0</span>
   <div class="topbar-right">
     <span style="color:var(--text3);font-size:11px;" id="trace-count">— runs</span>
+    <button class="shortcuts-hint-btn" id="shortcuts-hint-btn" onclick="openShortcutsModal()" title="Keyboard shortcuts (?)">?</button>
   </div>
 </div>
 
@@ -871,6 +954,29 @@
   </div>
 </div>
 
+<div class="shortcuts-modal-overlay" id="shortcuts-modal-overlay" onclick="onShortcutsOverlayClick(event)">
+  <div class="shortcuts-modal fade-in">
+    <div class="shortcuts-title">Keyboard shortcuts</div>
+    <table class="shortcuts-table">
+      <thead>
+        <tr><th>Key</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>j / ↓</td><td>Select next timeline step</td></tr>
+        <tr><td>k / ↑</td><td>Select previous timeline step</td></tr>
+        <tr><td>g</td><td>Jump to first step</td></tr>
+        <tr><td>G</td><td>Jump to last step</td></tr>
+        <tr><td>1-9</td><td>Jump to step number N</td></tr>
+        <tr><td>r</td><td>Refresh trace list</td></tr>
+        <tr><td>/</td><td>Focus run search</td></tr>
+        <tr><td>Escape</td><td>Deselect current step / close modal</td></tr>
+        <tr><td>?</td><td>Show keyboard shortcuts</td></tr>
+      </tbody>
+    </table>
+    <div class="shortcuts-modal-footnote">Click outside this panel or press Escape to close.</div>
+  </div>
+</div>
+
 <script>
 const API = 'http://localhost:7823/api';
 let allTraces = [];
@@ -882,6 +988,9 @@ let compareData = null;
 let activeCompareStepIndex = null;
 let searchTerm = '';
 let statusFilter = 'all';
+
+window.activeTrace = activeTrace;
+window.activeStepId = activeStepId;
 
 async function loadTraces() {
   try {
@@ -980,8 +1089,10 @@ async function loadComparison(leftId, rightId) {
     const res = await fetch(`${API}/traces/compare?left=${leftId}&right=${rightId}`);
     compareData = await res.json();
     activeTrace = null;
+    window.activeTrace = activeTrace;
     activeTraceId = null;
     activeStepId = null;
+    window.activeStepId = activeStepId;
     activeCompareStepIndex = null;
     renderSidebar();
     renderCompare();
@@ -995,11 +1106,13 @@ async function selectTrace(traceId) {
   activeCompareStepIndex = null;
   activeTraceId = traceId;
   activeStepId = null;
+  window.activeStepId = activeStepId;
   renderSidebar();
 
   try {
     const res = await fetch(`${API}/traces/${traceId}`);
     activeTrace = await res.json();
+    window.activeTrace = activeTrace;
     history.replaceState(null, '', `/trace/${traceId}`);
     renderTrace();
   } catch (e) {
@@ -1175,15 +1288,123 @@ function renderTimeline(steps) {
 
 function selectStep(stepId) {
   activeStepId = stepId;
+  window.activeStepId = activeStepId;
   const step = activeTrace?.steps?.find(s => s.step_id === stepId);
   if (!step) return;
   document.querySelectorAll('.step-node').forEach((el, i) => el.classList.toggle('active', activeTrace.steps[i]?.step_id === stepId));
   renderStepDetail(step);
 }
 
+function deselectStep() {
+  activeStepId = null;
+  window.activeStepId = activeStepId;
+  document.querySelectorAll('.step-node').forEach((el) => el.classList.remove('active'));
+  const panel = document.getElementById('detail-panel');
+  if (panel) {
+    panel.innerHTML = '<div class="select-hint">↑ Click any step in the timeline to inspect it</div>';
+    panel.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function getActiveStepIndex() {
+  if (!activeTrace?.steps?.length || activeStepId == null) return -1;
+  return activeTrace.steps.findIndex((step) => step.step_id === activeStepId);
+}
+
+function selectStepByIndex(index) {
+  if (!activeTrace?.steps?.length) return;
+  if (index < 0 || index >= activeTrace.steps.length) return;
+  selectStep(activeTrace.steps[index].step_id);
+}
+
+function openShortcutsModal() {
+  document.getElementById('shortcuts-modal-overlay')?.classList.add('open');
+}
+
+function closeShortcutsModal() {
+  document.getElementById('shortcuts-modal-overlay')?.classList.remove('open');
+}
+
+function onShortcutsOverlayClick(event) {
+  if (event.target.id === 'shortcuts-modal-overlay') closeShortcutsModal();
+}
+
+function onKeyboardShortcut(event) {
+  const modalOpen = document.getElementById('shortcuts-modal-overlay')?.classList.contains('open');
+  if (modalOpen && event.key === 'Escape') {
+    event.preventDefault();
+    closeShortcutsModal();
+    return;
+  }
+
+  if (event.target?.tagName === 'INPUT') return;
+
+  if (event.key === '?') {
+    event.preventDefault();
+    openShortcutsModal();
+    return;
+  }
+
+  if (event.key === '/') {
+    event.preventDefault();
+    document.getElementById('trace-search')?.focus();
+    return;
+  }
+
+  if (event.key === 'r') {
+    event.preventDefault();
+    loadTraces();
+    return;
+  }
+
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    deselectStep();
+    return;
+  }
+
+  if (!activeTrace?.steps?.length) return;
+
+  if (event.key >= '1' && event.key <= '9') {
+    event.preventDefault();
+    selectStepByIndex(Number(event.key) - 1);
+    return;
+  }
+
+  if (event.key === 'g') {
+    event.preventDefault();
+    selectStepByIndex(0);
+    return;
+  }
+
+  if (event.key === 'G') {
+    event.preventDefault();
+    selectStepByIndex(activeTrace.steps.length - 1);
+    return;
+  }
+
+  const currentIndex = getActiveStepIndex();
+  const fallbackIndex = currentIndex === -1 ? -1 : currentIndex;
+
+  if (event.key === 'j' || event.key === 'ArrowDown') {
+    event.preventDefault();
+    selectStepByIndex(Math.min(activeTrace.steps.length - 1, fallbackIndex + 1));
+  }
+
+  if (event.key === 'k' || event.key === 'ArrowUp') {
+    event.preventDefault();
+    if (fallbackIndex <= 0) {
+      selectStepByIndex(0);
+      return;
+    }
+    selectStepByIndex(fallbackIndex - 1);
+  }
+}
+
 function renderStepDetail(step) {
   const panel = document.getElementById('detail-panel');
   panel.innerHTML = `<div class="step-detail fade-in"><div class="step-detail-header"><div class="step-number">STEP ${step.step_id}</div><div class="step-detail-name">${step.name}</div><span class="step-type-badge type-${step.type || 'custom'}">${step.type?.replace('_', ' ') || 'step'}</span><div class="step-timing"><span>${formatDuration(step.duration_ms)}</span></div></div>${step.model ? `<div class="model-tag">◈ ${step.model}</div>` : ''}${step.input != null ? `<div class="section-label">Input</div><div class="code-block">${syntaxHighlight(step.input)}</div>` : ''}${!step.error && step.output != null ? `<div class="section-label">Output</div><div class="code-block">${syntaxHighlight(step.output)}</div>` : ''}</div>`;
+  panel.firstElementChild?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function syntaxHighlight(obj) {
@@ -1211,6 +1432,7 @@ function showError(msg) { document.getElementById('main-panel').innerHTML = `<di
 
 loadTraces();
 setInterval(loadTraces, 5000);
+document.addEventListener('keydown', onKeyboardShortcut);
 </script>
 </body>
 </html>
