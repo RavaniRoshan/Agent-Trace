@@ -1035,6 +1035,30 @@ function renderTrace() {
   `;
 }
 
+function renderCompare() {
+  const main = document.getElementById('main-panel');
+  const c = compareData;
+  if (!c) return;
+
+  main.innerHTML = `
+    <div class="trace-header fade-in">
+      <div class="trace-name">Compare runs</div>
+      <div class="trace-stats">
+        <div class="stat"><span class="stat-val">${c.left_trace.run_name}</span><span class="stat-label">left</span></div>
+        <div class="stat"><span class="stat-val">${c.right_trace.run_name}</span><span class="stat-label">right</span></div>
+      </div>
+    </div>
+    <div class="timeline-wrap fade-in">
+      <div class="timeline-label">Left timeline</div>
+      <div class="timeline">${renderCompareTimeline(c.left_trace.steps, 'left')}</div>
+      <div class="timeline-label" style="margin-top:14px">Right timeline</div>
+      <div class="timeline">${renderCompareTimeline(c.right_trace.steps, 'right')}</div>
+    </div>
+    <div class="compare-summary">Step index is aligned by position. Missing steps are highlighted.</div>
+    <div class="detail-panel" id="detail-panel">${renderCompareRows()}</div>
+  `;
+}
+
 
 function renderTokenWaterfall(steps) {
   if (!steps || !steps.length) return '';
