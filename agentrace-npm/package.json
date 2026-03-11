@@ -1,0 +1,53 @@
+{
+  "name": "agentrace",
+  "version": "0.1.0",
+  "description": "Visual debugger for AI agent loops. Step-by-step. Locally. Zero config.",
+  "type": "module",
+  "bin": {
+    "agentrace": "./bin/agentrace.js"
+  },
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node bin/agentrace.js ui",
+    "prepublishOnly": "node bin/agentrace.js --version"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "llm",
+    "debugging",
+    "observability",
+    "langchain",
+    "crewai",
+    "autogen",
+    "ollama",
+    "tracing",
+    "openai",
+    "anthropic",
+    "devtools"
+  ],
+  "homepage": "https://agentrace.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RavaniRoshan/agentrace"
+  },
+  "bugs": {
+    "url": "https://github.com/RavaniRoshan/agentrace/issues"
+  },
+  "author": "AgentTrace Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "express": "^4.18.2",
+    "open": "^10.1.0",
+    "ora": "^8.0.1"
+  }
+}
