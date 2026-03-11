@@ -36,8 +36,14 @@ app.add_middleware(
 
 
 @app.get("/api/traces")
-def list_traces():
-    return TraceStorage.list_all()
+def list_traces(
+    q: str | None = None,
+    status: str | None = Query(default=None, pattern="^(completed|failed|running)$"),
+    model: str | None = None,
+    from_date: str | None = Query(default=None, alias="from"),
+    to_date: str | None = Query(default=None, alias="to"),
+):
+    return TraceStorage.search(q=q, status=status, model=model, from_date=from_date, to_date=to_date)
 
 
 def _safe_json(value: Any) -> str:

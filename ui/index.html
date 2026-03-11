@@ -131,6 +131,52 @@
     color: var(--text3);
   }
 
+  .sidebar-controls {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .trace-search {
+    width: 100%;
+    background: var(--bg2);
+    color: var(--text);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    outline: none;
+  }
+
+  .trace-search:focus {
+    border-color: var(--accent);
+  }
+
+  .filter-pills {
+    display: flex;
+    gap: 6px;
+  }
+
+  .filter-pill {
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    background: transparent;
+    border-radius: 999px;
+    font-size: 10px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-family: var(--mono);
+  }
+
+  .filter-pill.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(124,106,247,0.12);
+  }
+
   .refresh-btn {
     background: none;
     border: 1px solid var(--border2);
@@ -689,6 +735,15 @@
       <span class="sidebar-title">Runs</span>
       <button class="refresh-btn" onclick="loadTraces()">↺ refresh</button>
     </div>
+
+    <div class="sidebar-controls">
+      <input id="trace-search" class="trace-search" type="text" placeholder="Search runs..." oninput="onSearchInput(event)" />
+      <div class="filter-pills">
+        <button class="filter-pill active" data-status="all" onclick="setStatusFilter('all')">All</button>
+        <button class="filter-pill" data-status="completed" onclick="setStatusFilter('completed')">Completed</button>
+        <button class="filter-pill" data-status="failed" onclick="setStatusFilter('failed')">Failed</button>
+      </div>
+    </div>
     <div class="trace-list" id="trace-list">
       <div class="loading"><div class="spinner"></div> loading...</div>
     </div>
@@ -721,6 +776,8 @@ let activeTrace = null;
 let compareSelection = [];
 let compareData = null;
 let activeCompareStepIndex = null;
+let searchTerm = '';
+let statusFilter = 'all';
 
 async function loadTraces() {
   try {
@@ -739,6 +796,29 @@ async function loadTraces() {
   }
 }
 
+
+function onSearchInput(event) {
+  searchTerm = event.target.value || '';
+  renderSidebar();
+}
+
+function setStatusFilter(status) {
+  statusFilter = status;
+  document.querySelectorAll('.filter-pill').forEach((pill) => {
+    pill.classList.toggle('active', pill.dataset.status === statusFilter);
+  });
+  renderSidebar();
+}
+
+function getFilteredTraces() {
+  const query = searchTerm.trim().toLowerCase();
+  return allTraces.filter((trace) => {
+    const matchesSearch = !query || (trace.run_name || '').toLowerCase().includes(query);
+    const matchesStatus = statusFilter === 'all' || trace.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+}
+
 function renderSidebar() {
   const container = document.getElementById('trace-list');
   if (!allTraces.length) {
@@ -746,7 +826,13 @@ function renderSidebar() {
     return;
   }
 
-  container.innerHTML = allTraces.map(t => `
+  const traces = getFilteredTraces();
+  if (!traces.length) {
+    container.innerHTML = `<div style="padding:16px;color:var(--text3);font-size:11px;text-align:center;line-height:2">No results</div>`;
+    return;
+  }
+
+  container.innerHTML = traces.map(t => `
     <div class="trace-item ${t.trace_id === activeTraceId ? 'active' : ''}" onclick="selectTrace('${t.trace_id}')">
       <div class="trace-item-top">
         <div class="trace-item-name" style="margin-bottom:0">${t.run_name}</div>
