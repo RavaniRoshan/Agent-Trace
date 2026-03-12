@@ -1,0 +1,72 @@
+<svg width="1200" height="220" viewBox="0 0 1200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Dark background gradient -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="220" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#0a0a0b"/>
+      <stop offset="100%" stop-color="#0d0d16"/>
+    </linearGradient>
+
+    <!-- Multicolour text gradient: left to right across full width -->
+    <linearGradient id="textGrad" x1="100" y1="0" x2="1100" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#a78bfa"/>
+      <stop offset="20%"  stop-color="#7c6af7"/>
+      <stop offset="40%"  stop-color="#60a5fa"/>
+      <stop offset="60%"  stop-color="#34d399"/>
+      <stop offset="80%"  stop-color="#7c6af7"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+
+    <!-- Subtle glow on the block text -->
+    <filter id="glow" x="-2%" y="-10%" width="104%" height="120%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Faint grid -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-width="0.4" opacity="0.025"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="220" fill="url(#bg)"/>
+  <rect width="1200" height="220" fill="url(#grid)"/>
+
+  <!-- Top + bottom border lines -->
+  <rect x="0" y="0"   width="1200" height="2" fill="url(#textGrad)" opacity="0.5"/>
+  <rect x="0" y="218" width="1200" height="2" fill="url(#textGrad)" opacity="0.2"/>
+
+  <!--
+    AGENTRACE in exact ASCII block-art using Unicode █ characters.
+    Font: monospace. Each line rendered individually, centred.
+    5 rows × 18px line-height.
+  -->
+  <text
+    font-family="'Courier New', 'Lucida Console', 'Consolas', monospace"
+    font-size="15"
+    fill="url(#textGrad)"
+    filter="url(#glow)"
+    text-anchor="middle"
+    xml:space="preserve"
+  >
+    <tspan x="600" dy="0"  y="54" >  █████   ██████  ███████ ███    ██ ████████ ██████   █████   ██████ ███████ </tspan>
+    <tspan x="600" dy="20"        > ██   ██ ██       ██      ████   ██    ██    ██   ██ ██   ██ ██      ██      </tspan>
+    <tspan x="600" dy="20"        > ███████ ██   ███ █████   ██ ██  ██    ██    ██████  ███████ ██      █████   </tspan>
+    <tspan x="600" dy="20"        > ██   ██ ██    ██ ██      ██  ██ ██    ██    ██   ██ ██   ██ ██      ██      </tspan>
+    <tspan x="600" dy="20"        > ██   ██  ██████  ███████ ██   ████    ██    ██   ██ ██   ██  ██████ ███████ </tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text
+    x="600" y="186"
+    text-anchor="middle"
+    font-family="'Courier New', 'Lucida Console', 'Consolas', monospace"
+    font-size="12.5"
+    letter-spacing="5"
+    fill="#44445a"
+  >VISUAL  DEBUGGER  FOR  AI  AGENT  LOOPS</text>
+
+</svg>
