@@ -1,27 +1,342 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap");
+/* ─── Google Fonts ─────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap");
 
+/* ─── Brand tokens ──────────────────────────── */
 :root {
-  --sl-color-accent-low: #2d2060;
-  --sl-color-accent: #7c6af7;
-  --sl-color-accent-high: #b8b0ff;
-  --sl-color-white: #ffffff;
-  --sl-color-gray-1: #e8e8f0;
-  --sl-color-gray-2: #c0c0d0;
-  --sl-color-gray-3: #808090;
-  --sl-color-gray-4: #404050;
-  --sl-color-gray-5: #252530;
-  --sl-color-gray-6: #18181d;
-  --sl-color-black: #0a0a0b;
-  --sl-font: "JetBrains Mono", monospace;
+  /* Two-tone palette */
+  --sl-color-accent-low:       #2a1f00;
+  --sl-color-accent:           #f59e0b;
+  --sl-color-accent-high:      #fbbf24;
+
+  /* Backgrounds */
+  --sl-color-black:            #0e0e0e;
+  --sl-color-gray-6:           #1a1a1a;
+  --sl-color-gray-5:           #242424;
+  --sl-color-gray-4:           #2e2e2e;
+  --sl-color-gray-3:           #9a9080;
+  --sl-color-gray-2:           #c8c0b4;
+  --sl-color-gray-1:           #f0ebe4;
+  --sl-color-white:            #f5f4f0;
+
+  /* Typography */
+  --sl-font:                   'Syne', sans-serif;
+  --sl-font-mono:              'JetBrains Mono', monospace;
+
+  /* Sidebar width */
+  --sl-sidebar-width:          18rem;
+
+  /* Content width */
+  --sl-content-width:          48rem;
 }
 
-.hero h1 {
-  font-family: "Syne", sans-serif;
+/* ─── Glassmorphism: top nav bar ───────────────
+   Starlight's header sits in <header> or .header
+   We target both to be safe.
+──────────────────────────────────────────────── */
+header,
+.header,
+starlight-menu-button {
+  background: rgba(14, 14, 14, 0.75) !important;
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.12) !important;
+  box-shadow: 0 1px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ─── Glassmorphism: sidebar ───────────────────
+──────────────────────────────────────────────── */
+nav.sidebar,
+.sidebar,
+[data-sidebar] {
+  background: rgba(20, 20, 20, 0.72) !important;
+  backdrop-filter: blur(12px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
+  border-right: 1px solid rgba(245, 158, 11, 0.08) !important;
+}
+
+/* ─── Glassmorphism: mobile nav drawer ─────────
+──────────────────────────────────────────────── */
+#starlight__sidebar {
+  background: rgba(14, 14, 14, 0.88) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  height: 100vh !important;
+}
+
+/* ─── Glassmorphism: TOC (right sidebar) ───────
+──────────────────────────────────────────────── */
+.right-sidebar,
+starlight-toc {
+  background: rgba(20, 20, 20, 0.60) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border-left: 1px solid rgba(245, 158, 11, 0.06) !important;
+}
+
+/* ─── Page background ───────────────────────── */
+body,
+.page {
+  background: var(--sl-color-black);
+}
+
+/* ─── Main content area ─────────────────────── */
+.content-panel,
+.sl-markdown-content {
+  background: transparent;
+}
+
+/* ─── Typography ────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Syne', sans-serif !important;
   font-weight: 800;
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: -0.02em;
+  color: var(--sl-color-white);
+}
+
+h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.1; }
+h2 { font-size: clamp(1.4rem, 3vw, 2rem);   line-height: 1.15; margin-top: 2.5rem; }
+h3 { font-size: 1.2rem; margin-top: 2rem; }
+
+p, li {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--sl-color-gray-2);
+}
+
+/* ─── Links ─────────────────────────────────── */
+a {
+  color: var(--sl-color-accent);
+  text-underline-offset: 3px;
+  transition: color 150ms ease;
+}
+a:hover {
+  color: var(--sl-color-accent-high);
+}
+
+/* ─── Inline code ───────────────────────────── */
+:not(pre) > code {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.85em;
+  background: #1e1e1e !important;
+  color: #fbbf24 !important;
+  border: 1px solid #2e2e2e !important;
+  border-radius: 4px;
+  padding: 2px 8px !important;
+}
+
+/* ─── Code blocks ───────────────────────────── */
+pre,
+pre code {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.875rem !important;
+  line-height: 1.65 !important;
+  background: #141414 !important;
+  border: 1px solid #2a2a2a !important;
+  border-left: 3px solid var(--sl-color-accent) !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+
+/* ─── Code block: copy button ───────────────── */
+.copy-button,
+[data-copy] {
+  background: #2a2a2a !important;
+  color: var(--sl-color-gray-3) !important;
+  border: 1px solid #333 !important;
+  border-radius: 6px !important;
+  transition: all 150ms ease !important;
+}
+.copy-button:hover {
+  background: var(--sl-color-accent) !important;
+  color: #1a1a1a !important;
+  border-color: var(--sl-color-accent) !important;
+}
+
+/* ─── Aside / callout boxes ─────────────────── */
+.starlight-aside {
+  background: rgba(245, 158, 11, 0.06) !important;
+  border-left: 3px solid var(--sl-color-accent) !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+.starlight-aside--note {
+  border-left-color: #3b82f6 !important;
+  background: rgba(59, 130, 246, 0.06) !important;
+}
+.starlight-aside--caution {
+  border-left-color: #f43f5e !important;
+  background: rgba(244, 63, 94, 0.06) !important;
+}
+.starlight-aside--tip {
+  border-left-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.06) !important;
+}
+
+/* ─── Tables ────────────────────────────────── */
+table {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  border-collapse: collapse;
+  width: 100%;
+}
+thead tr {
+  background: #1e1e1e;
+  border-bottom: 2px solid var(--sl-color-accent);
+}
+thead th {
+  color: var(--sl-color-accent) !important;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 12px 16px;
+}
+tbody tr {
+  border-bottom: 1px solid #2a2a2a;
+  transition: background 150ms ease;
+}
+tbody tr:hover {
+  background: rgba(245, 158, 11, 0.04);
+}
+tbody td {
+  padding: 12px 16px;
+  color: var(--sl-color-gray-2);
+}
+
+/* ─── Sidebar nav items ─────────────────────── */
+.sidebar-content a,
+nav.sidebar a,
+[data-sidebar] a {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  color: var(--sl-color-gray-3) !important;
+  border-radius: 6px;
+  padding: 5px 10px;
+  transition: all 150ms ease;
+  text-decoration: none;
+}
+.sidebar-content a:hover,
+nav.sidebar a:hover {
+  color: var(--sl-color-white) !important;
+  background: rgba(245, 158, 11, 0.08) !important;
+}
+
+/* Active sidebar item */
+.sidebar-content a[aria-current="page"],
+nav.sidebar a[aria-current="page"] {
+  color: var(--sl-color-accent) !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+  font-weight: 700 !important;
+  border-left: 2px solid var(--sl-color-accent);
+}
+
+/* Sidebar group headers */
+.group-label,
+.sidebar-content summary,
+[data-sidebar] summary {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: var(--sl-color-accent) !important;
+  opacity: 0.7;
+}
+
+/* ─── Pagination (prev/next) ────────────────── */
+.pagination-links a {
+  background: #1a1a1a !important;
+  border: 1px solid #2a2a2a !important;
+  border-radius: 10px !important;
+  padding: 16px 24px !important;
+  transition: all 150ms ease !important;
+  text-decoration: none !important;
+}
+.pagination-links a:hover {
+  border-color: var(--sl-color-accent) !important;
+  background: rgba(245, 158, 11, 0.06) !important;
+}
+.pagination-links .link-title {
+  color: var(--sl-color-white) !important;
+  font-family: 'Syne', sans-serif !important;
+  font-weight: 700 !important;
+}
+
+/* ─── Search box ────────────────────────────── */
+site-search button,
+[data-open-modal] {
+  background: rgba(245, 158, 11, 0.08) !important;
+  border: 1px solid rgba(245, 158, 11, 0.2) !important;
+  border-radius: 8px !important;
+  color: var(--sl-color-gray-3) !important;
+  backdrop-filter: blur(8px) !important;
+  transition: all 150ms ease !important;
+}
+site-search button:hover,
+[data-open-modal]:hover {
+  border-color: var(--sl-color-accent) !important;
+  color: var(--sl-color-accent) !important;
+}
+
+/* ─── Search modal ──────────────────────────── */
+dialog[data-search-modal] {
+  background: rgba(20, 20, 20, 0.92) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.15) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* ─── Horizontal rules ──────────────────────── */
+hr {
+  border-color: #2a2a2a !important;
+}
+
+/* ─── Scrollbar (webkit) ────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+::-webkit-scrollbar-thumb {
+  background: #2e2e2e;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sl-color-accent);
+}
+
+/* ─── Selection highlight ───────────────────── */
+::selection {
+  background: rgba(245, 158, 11, 0.25);
+  color: var(--sl-color-white);
+}
+
+/* ─── Hero component (if any doc uses it) ───── */
+.hero {
+  padding-block: 4rem;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif !important;
+  font-weight: 800 !important;
   letter-spacing: -0.03em;
 }
 
-code, pre {
-  font-family: "JetBrains Mono", monospace;
+/* ─── Desktop Sidebar Fix ───────────────────── */
+@media (min-width: 50rem) {
+  #starlight__sidebar, .sidebar-pane {
+    height: 100vh !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+
+/* ─── Mobile ────────────────────────────────── */
+@media (max-width: 768px) {
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.3rem; }
+  pre { font-size: 0.8rem !important; }
 }
